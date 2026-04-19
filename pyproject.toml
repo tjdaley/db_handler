@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "db_handler"
+version = "0.1.0"
+description = "Pydantic-typed repository pattern over Supabase (and other backends via the DatabaseManager ABC)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "Tom Daley", email = "tom@powerdaley.com" }]
+keywords = ["supabase", "pydantic", "repository", "database"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Database",
+]
+dependencies = [
+    "pydantic>=2.0",
+    "supabase>=2.0",
+    "postgrest>=0.16",
+    "httpx>=0.24",
+    "tenacity>=8.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "pytest-mock>=3",
+]
+
+[project.urls]
+Homepage = "https://github.com/tjdaley/db_handler"
+Issues = "https://github.com/tjdaley/db_handler/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+db_handler = ["py.typed"]
