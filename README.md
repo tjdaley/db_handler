@@ -18,26 +18,26 @@ Three pieces:
 This package is not on PyPI. Install directly from GitHub:
 
 ```bash
-pip install "git+https://github.com/<user>/db_handler.git"
+pip install "git+https://github.com/tjdaley/db_handler.git"
 ```
 
 Pin a tag or commit for reproducibility:
 
 ```bash
-pip install "git+https://github.com/<user>/db_handler.git@v0.1.0"
+pip install "git+https://github.com/tjdaley/db_handler.git@v0.1.0"
 ```
 
 In `requirements.txt`:
 
 ```
-db_handler @ git+https://github.com/<user>/db_handler.git@v0.1.0
+db_handler @ git+https://github.com/tjdaley/db_handler.git@v0.1.0
 ```
 
 In `pyproject.toml` (PEP 508):
 
 ```toml
 dependencies = [
-    "db_handler @ git+https://github.com/<user>/db_handler.git@v0.1.0",
+    "db_handler @ git+https://github.com/tjdaley/db_handler.git@v0.1.0",
 ]
 ```
 
