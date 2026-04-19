@@ -117,13 +117,53 @@ attorneys.delete(attorney.id)
 | `list` / `tuple` / `set` | `field IN (...)` |
 | `Overlaps` | `.ov(field, list)` |
 
-`condition` can include an `Overlaps` sentinal, e.g.:
+#### Scalar Example
+
+```python
+# find attorney having a given bar_number
+attorney: Attorney = attorneys.select_many(condition={"bar_number": '24059643')
+```
+
+#### None/Null Example
+
+```python
+# find all attorneys having missing bar_number
+attorneys: List[Attorney], count = attorneys.select_many(condition={"bar_number": None)
+```
+
+#### Not_Null Example
+
+```python
+from db_handler import NOT_NULL
+
+# find all attorneys who do NOT have null bar_number
+attorneys: list[Attorney], count = attorneys.select_many(condition={"bar_number": NOT_NULL})
+```
+
+#### List Example
+
+Using a list vs. the `Overlaps` sentinel differs in how data are
+compared. `in` checks whether a given scalar (single value) exists
+within the provided list.
+
+```python
+# find all attorneys who fall within a list of bar_number values
+search_for = ['24059643', '24059688']
+attorneys: list[Attorney], count = attorneys.select_many(condition={"bar_number": search_for})
+```
+
+#### Overlaps Example
+
+Using a list vs. the `Overlaps` sentinel differs in how data are
+compared. `Overlaps` checks whether a given array (list of values) overlaps with the provided list.
+
+To check for overlap between lists, use the `Overlaps` sentinal, e.g.:
 
 ```python
 from db_handler import Overlaps
 
 # find all attorneys specializing in family or civil law.
-attorneys: list[Attorney], count = attorneys.select_many(condition={"specialities", Overlaps(['family', 'civil'])})
+attorneys: list[Attorney], count = attorneys.select_many(condition={"specialities": Overlaps(['family', 'civil'])})
 ```
 
 ### Upsert
