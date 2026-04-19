@@ -1,9 +1,11 @@
 # db_handler
 
+![coverage](https://img.shields.io/badge/coverage-100%-green)
+![version](https://img.shields.io/badge/version-0.1.2-blue)
+![status](https://img.shields.io/badge/BUILD-PASSING-brightgreen)
+
 A small, opinionated Python package that wraps Supabase with a Pydantic-typed
-repository pattern. It consolidates the implementations that previously lived
-copy-pasted inside several projects (`Cyclone`, `JDBOT`, `OpinionBlogger`,
-`TexasLawBrandEngine` — see [code_base/](code_base/) for the originals).
+repository pattern.
 
 Three pieces:
 
@@ -15,29 +17,27 @@ Three pieces:
 
 ## Install
 
-This package is not on PyPI. Install directly from GitHub:
-
 ```bash
-pip install "git+https://github.com/tjdaley/db_handler.git"
+pip install tjd-db-handler
 ```
 
 Pin a tag or commit for reproducibility:
 
 ```bash
-pip install "git+https://github.com/tjdaley/db_handler.git@v0.1.0"
+pip install tjd-db-handler>=0.1.2,<1.0
 ```
 
 In `requirements.txt`:
 
 ```
-db_handler @ git+https://github.com/tjdaley/db_handler.git@v0.1.0
+tjd-db-handler
 ```
 
 In `pyproject.toml` (PEP 508):
 
 ```toml
 dependencies = [
-    "db_handler @ git+https://github.com/tjdaley/db_handler.git@v0.1.0",
+    "tjd-db-handler",
 ]
 ```
 
@@ -76,28 +76,32 @@ class Attorney(BaseModel):
     firm_id: int
     name: str
     bar_number: str | None = None
+    specialities: list[str] | None = None
 
 
 class AttorneyRepo(BaseRepository[Attorney]):
     def __init__(self, manager):
-        super().__init__(manager, "attorneys", Attorney)
+        super().__init__(manager, 'attorneys', Attorney)
 
     # Table-specific helpers go here
     def by_firm_id(self, firm_id: int) -> list[Attorney]:
-        rows, _ = self.select_many({"firm_id": firm_id})
+        rows, _ = self.select_many({'firm_id': firm_id})
         return rows
 
     def with_bar_number(self) -> list[Attorney]:
-        rows, _ = self.select_many({"bar_number": NOT_NULL})
+        rows, _ = self.select_many({'bar_number': NOT_NULL})
         return rows
 
 
 db = SupabaseManager()
 attorneys = AttorneyRepo(db)
 
-attorney = attorneys.insert({"firm_id": 17, "name": "Atticus Finch"})
+attorney = attorneys.insert({"firm_id": 17, "name": "Atticus Finch", "specialities": ['family', 'criminal']})
 fetched = attorneys.select_one({"id": attorney.id})
-attorneys.update(attorney.id, {"bar_number": "TX-123456"})
+
+# Update entire record each time.
+attorneys.update(attorney.id, {"firm_id": 17, "name": "Atticus Finch", "bar_number": "TX-123456"})
+exists: bool = attorneys.exists(attorney.id)
 attorneys.delete(attorney.id)
 ```
 
@@ -111,6 +115,16 @@ attorneys.delete(attorney.id)
 | `None` | `field IS NULL` |
 | `NOT_NULL` | `field IS NOT NULL` |
 | `list` / `tuple` / `set` | `field IN (...)` |
+| `Overlaps` | `.ov(field, list) |
+
+`condition` can include an `Overlaps` sentinal, e.g.:
+
+```python
+from db_handler import Overlaps
+
+# find all attorneys specializing in family or civil law.
+attorneys.select_on(condition={"specialities", Overlaps(['family', 'civil'])})
+```
 
 ### Upsert
 
@@ -159,7 +173,7 @@ repo = BaseRepository(SqliteManager(...), "attorneys", Attorney)
 
 ## Repo layout
 
-```
+```txt
 db_handler/
 ├── pyproject.toml
 ├── README.md
@@ -173,3 +187,9 @@ db_handler/
 │       ├── _json.py              # json_safe coercion
 │       └── py.typed
 ```
+
+---
+
+Copyright &copy; by Thomas J. Daley. Licensed under the [MIT License](https://opensource.org/license/mit).
+
+**Built with ❤️ by Thomas J. Daley ([Blog](https://www.thomsjdaley.com)) ([Law Practice](https://www.txfamlaw.com)) in a sprint to democratize access to quality legal services.**
