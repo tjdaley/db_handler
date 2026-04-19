@@ -1,6 +1,6 @@
 # db_handler
 
-![coverage](https://img.shields.io/badge/coverage-100%-brightgreen)
+![coverage](https://img.shields.io/badge/coverage-100_pct-brightgreen)
   ![status](https://img.shields.io/badge/BUILD-PASSING-brightgreen)
 ![version](https://img.shields.io/badge/version-0.1.2-blue)
 
