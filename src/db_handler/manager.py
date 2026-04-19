@@ -29,6 +29,26 @@ Example::
 """
 
 
+class Overlaps:
+    """Sentinel for array-overlap conditions (PostgreSQL ``&&`` / PostgREST ``.ov``).
+
+    Matches rows where the column's array shares at least one element with the
+    supplied values.
+
+    Example::
+
+        repo.select_many({"tags": Overlaps(["urgent", "legal"])})
+    """
+
+    __slots__ = ("values",)
+
+    def __init__(self, values: "list[Any] | tuple[Any, ...] | set[Any]"):
+        self.values = list(values)
+
+    def __repr__(self) -> str:
+        return f"Overlaps({self.values!r})"
+
+
 class DatabaseManager(ABC):
     """Abstract interface for a database backend.
 

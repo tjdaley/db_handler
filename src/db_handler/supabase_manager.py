@@ -20,7 +20,7 @@ from tenacity import (
 )
 
 from db_handler._json import json_safe
-from db_handler.manager import DatabaseManager, NotNull
+from db_handler.manager import DatabaseManager, NotNull, Overlaps
 
 LOGGER = logging.getLogger(__name__)
 
@@ -106,6 +106,8 @@ class SupabaseManager(DatabaseManager):
         for field, value in condition.items():
             if isinstance(value, NotNull):
                 query = query.not_.is_(field, "null")
+            elif isinstance(value, Overlaps):
+                query = query.ov(field, value.values)
             elif value is None:
                 query = query.is_(field, "null")
             elif isinstance(value, (list, tuple, set)):
