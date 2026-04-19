@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tjd_db_handler"
-version = "0.1.1"
+version = "0.1.2"
 description = "Pydantic-typed repository pattern over Supabase (and other backends via the DatabaseManager ABC)."
 readme = "README.md"
 requires-python = ">=3.10"
