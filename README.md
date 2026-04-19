@@ -115,7 +115,7 @@ attorneys.delete(attorney.id)
 | `None` | `field IS NULL` |
 | `NOT_NULL` | `field IS NOT NULL` |
 | `list` / `tuple` / `set` | `field IN (...)` |
-| `Overlaps` | `.ov(field, list) |
+| `Overlaps` | `.ov(field, list)` |
 
 `condition` can include an `Overlaps` sentinal, e.g.:
 
@@ -123,7 +123,7 @@ attorneys.delete(attorney.id)
 from db_handler import Overlaps
 
 # find all attorneys specializing in family or civil law.
-attorneys.select_on(condition={"specialities", Overlaps(['family', 'civil'])})
+attorneys: list[Attorney], count = attorneys.select_many(condition={"specialities", Overlaps(['family', 'civil'])})
 ```
 
 ### Upsert
